@@ -78,11 +78,7 @@ The calculator is intended as a reproducibility aid for the dual-DAWI boundary-s
 |-- README.md
 `-- LICENSE        # add before public release
 ```
-
-## License
-
-Choose and add a license before describing the repository as open-source software. MIT is a simple permissive option for a standalone calculator. GPL-3.0 is appropriate if you want modified and redistributed versions to remain under a copyleft license, similar to the public `bhclowers/DAMS` repository.
-
 ## Citation and feedback
 
-When using the calculator in a publication, cite both the associated manuscript and this repository. For bug reports or improvements, open a GitHub issue with the input parameters, browser, expected result, and observed result.
+When using the calculator in a publication, cite the associated manuscript and this repository. For bug reports or improvements, open a GitHub issue with the input parameters, browser, expected result, and observed result.
+
