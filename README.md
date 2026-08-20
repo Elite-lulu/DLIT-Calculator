@@ -11,7 +11,7 @@ Open [`index.html`](index.html) in a modern web browser. No build step or local 
 For a public web version, enable GitHub Pages for the repository and publish the default branch from the repository root. The resulting URL will normally be:
 
 ```text
-(https://elite-lulu.github.io/DLIT-Calculator/)
+https://elite-lulu.github.io/DLIT-Calculator/
 ```
 
 ## Inputs and outputs
