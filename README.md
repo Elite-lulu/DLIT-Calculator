@@ -6,7 +6,7 @@ The calculator runs entirely in the browser. It has no external dependencies and
 
 ## Run locally
 
-Open [`index.html`](index.html) in a modern web browser. No build step or local server is required.
+Open [`index-new.html`](index-new.html) in a modern web browser. No build step or local server is required.
 
 For a public web version, enable GitHub Pages for the repository and publish the default branch from the repository root. The resulting URL will normally be:
 
