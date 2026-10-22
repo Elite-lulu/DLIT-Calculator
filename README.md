@@ -74,7 +74,7 @@ The calculator is intended as a reproducibility aid for the dual-DAWI boundary-s
 
 ```text
 .
-|-- index.html
+|-- index-new.html
 |-- README.md
 `-- LICENSE        # add before public release
 ```
