@@ -6,7 +6,7 @@ The calculator runs entirely in the browser. It has no external dependencies and
 
 ## Run locally
 
-Open [`index-updated.html`](index-updated.html) in a modern web browser. No build step or local server is required.
+Open [`index.html`](index.html) in a modern web browser. No build step or local server is required.
 
 For a public web version, enable GitHub Pages for the repository and publish the default branch from the repository root. The resulting URL will normally be:
 
@@ -43,7 +43,7 @@ Tr(M_y) = -2  at beta_y = 1  -> q_right
 The mass-to-frequency conversion is implemented as:
 
 ```text
-C     = e A_2 V_0 / (u r_0^2 pi^2)
+C     = e A_2 V / (u r_0^2 pi^2)
 M_max = C / (q_left  f_HM^2)
 M_min = C / (q_right f_LM^2)
 ```
