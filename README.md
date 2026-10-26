@@ -6,7 +6,7 @@ The calculator runs entirely in the browser. It has no external dependencies and
 
 ## Run locally
 
-Open [`index-new.html`](index-new.html) in a modern web browser. No build step or local server is required.
+Open [`index-updated.html`](index-updated.html) in a modern web browser. No build step or local server is required.
 
 For a public web version, enable GitHub Pages for the repository and publish the default branch from the repository root. The resulting URL will normally be:
 
@@ -19,14 +19,13 @@ https://elite-lulu.github.io/DLIT-Calculator/
 Inputs:
 
 - Duty cycle, `d`
-- Single-ended RF voltage amplitude, `V_0`
+- Applied rectangular-waveform voltage magnitude, `V_0`
 - Characteristic electrode radius, `r_0`
 - Geometric field-correction coefficient, `A_2`
 - Lower mass boundary, `M_min`
 - Upper mass boundary, `M_max`
 
 Outputs:
-
 - `f_LM`, the DAWI-1 main RF frequency associated with `M_min`
 - `f_HM`, the DAWI-2 main RF frequency associated with `M_max`
 - `f_HM - f_LM`
