@@ -19,7 +19,7 @@ https://elite-lulu.github.io/DLIT-Calculator/
 Inputs:
 
 - Duty cycle, `d`
-- Single-ended RF voltage amplitude, `V_rf`
+- Single-ended RF voltage amplitude, `V_0`
 - Characteristic electrode radius, `r_0`
 - Geometric field-correction coefficient, `A_2`
 - Lower mass boundary, `M_min`
@@ -44,14 +44,14 @@ Tr(M_y) = -2  at beta_y = 1  -> q_right
 The mass-to-frequency conversion is implemented as:
 
 ```text
-C     = e A_2 V_rf / (u r_0^2 pi^2)
+C     = e A_2 V_0 / (u r_0^2 pi^2)
 M_max = C / (q_left  f_HM^2)
 M_min = C / (q_right f_LM^2)
 ```
 
 The code converts `r_0` from millimeters to meters and converts the system constant from Hz^2 Da to MHz^2 Da before calculating the displayed frequencies. The boundary-setting relations are described by eqs 3 and 4.
 
-The shipped defaults are `r_0 = 5.00 mm` and `A_2 = 0.848`, matching the rounded parameter values used in the manuscript. The other example defaults are `d = 0.606075`, `V_rf = 95.5 V`, `M_min = 193.5 Da`, and `M_max = 196 Da`. Change these values when modeling a different instrument or target.
+The shipped defaults are `r_0 = 5.00 mm` and `A_2 = 0.8482`, matching the rounded parameter values used in the manuscript. The other example defaults are `d = 0.606075`, `V_0 = 100.0 V`, `M_min = 193.5 Da`, and `M_max = 196 Da`. Change these values when modeling a different instrument or target.
 
 The numerical root finder uses a scan followed by bisection. It is intended for the operating range represented by the current DLIT implementation. It should not be interpreted as a universal stability solver for every digital-ion-trap geometry or waveform convention.
 
