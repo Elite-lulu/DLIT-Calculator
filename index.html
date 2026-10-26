@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLIT Dual-DAWI Boundary Frequency Calculator</title>
+    <style>
+        :root {
+            --primary-color: #0ea5e9; 
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --border-color: #cbd5e1;
+            --formula-color: #8b5cf6;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: var(--card-bg);
+            max-width: 900px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 35px;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
+        }
+        @media (max-width: 768px) {
+            .layout { grid-template-columns: 1fr; }
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .input-group {
+            background: #f1f5f9;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            color: #334155;
+        }
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type="range"] {
+            flex-grow: 1;
+        }
+        .freq-input-wrapper {
+            position: relative;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1.05rem;
+            font-family: monospace;
+            transition: all 0.2s ease;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+        }
+        .unit-suffix {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            pointer-events: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .results-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .result-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            border-right: 1px solid #e2e8f0;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .result-item.highlight {
+            border-left-color: #f43f5e;
+            background-color: #fff1f2;
+        }
+        .result-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .result-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            font-family: monospace;
+        }
+        .result-sub {
+            font-size: 0.85rem;
+            color: #10b981;
+            margin-top: 4px;
+            font-family: monospace;
+        }
+        .result-formula {
+            font-size: 0.95rem;
+            color: var(--formula-color);
+            margin-top: 6px;
+            font-family: monospace;
+            font-weight: bold;
+            background-color: rgba(139, 92, 246, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .result-item.highlight .result-value {
+            color: #be123c;
+        }
+        .unit {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 500;
+            font-family: -apple-system, sans-serif;
+        }
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+        .hint {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 20px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 12px;
+        }
+        .hint code {
+            background: #f1f5f9;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+        .field-note {
+            margin-top: 8px;
+            color: var(--text-light);
+            font-size: 0.82rem;
+            line-height: 1.45;
+        }
+        .field-note strong {
+            color: var(--text-main);
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>DLIT Dual-DAWI Boundary Frequency Calculator</h1>
+    <div class="subtitle">Set the lower and upper mass boundaries to calculate the DAWI-1 (f<sub>LM</sub>) and DAWI-2 (f<sub>HM</sub>) RF frequencies.<br>
+    Floquet trace solution for the q-boundaries</div>
+    <div class="layout">
+        <div class="controls">
+            <div class="input-group">
+                <label>Duty cycle <i>d</i></label>
+                <div class="slider-wrapper">
+                    <input type="range" id="dSlider" min="0.5100" max="0.6120" step="0.0001" value="0.606075">
+                    <input type="number" id="dInput" value="0.606075" step="0.0001" style="width: 110px;">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Applied rectangular-waveform voltage magnitude <i>V<sub>0</sub></i></label>
+                <div class="freq-input-wrapper">
+                    <input type="number" id="v0" value="100.0" step="0.1">
+                    <span class="unit-suffix">V</span>
+                </div>
+                <div class="field-note">
+                    For the symmetric waveform (<i>V</i><sub>H</sub> = +<i>V</i><sub>0</sub>, <i>V</i><sub>L</sub> = −<i>V</i><sub>0</sub>), the effective RF amplitude used in the mass–<i>q</i> relationship is
+                    <strong id="vEffective">95.4992 V</strong>.
+                    It is calculated from <i>V</i> = 4<i>d</i>(1 − <i>d</i>)<i>V</i><sub>0</sub> (eq S2).
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Characteristic electrode radius <i>r<sub>0</sub></i></label>
+                <div class="freq-input-wrapper">
+                    <input type="number" id="r0" value="5.00" step="0.01">
+                    <span class="unit-suffix">mm</span>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Geometric field-correction coefficient <i>A<sub>2</sub></i></label>
+                <div class="freq-input-wrapper">
+                    <input type="number" id="A2" value="0.848167539" step="0.000000001">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Lower mass boundary <i>M<sub>min</sub></i></label>
+                <div class="freq-input-wrapper">
+                    <input type="number" id="mMinIn" value="193.5" step="0.5">
+                    <span class="unit-suffix">Da</span>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Upper mass boundary <i>M<sub>max</sub></i></label>
+                <div class="freq-input-wrapper">
+                    <input type="number" id="mMaxIn" value="196" step="0.5">
+                    <span class="unit-suffix">Da</span>
+                </div>
+            </div>
+        </div>
+        <div class="results-panel">
+            <div class="result-item highlight">
+                <div class="result-label">DAWI-1 low-mass cutoff f<sub>LM</sub></div>
+                <div class="result-value" id="resFlm">0.0000 <span class="unit">MHz</span></div>
+                <div class="result-sub" id="resQright">q_right = 0.000000</div>
+                <div class="result-formula" id="formFlm">f_LM = &radic;(0.00 / M_min)</div>
+            </div>
+            <div class="result-item highlight">
+                <div class="result-label">DAWI-2 high-mass cutoff f<sub>HM</sub></div>
+                <div class="result-value" id="resFhm">0.0000 <span class="unit">MHz</span></div>
+                <div class="result-sub" id="resQleft">q_left = 0.000000</div>
+                <div class="result-formula" id="formFhm">f_HM = &radic;(0.00 / M_max)</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">Frequency difference f<sub>HM</sub> &minus; f<sub>LM</sub></div>
+                <div class="result-value" id="resFdif">0.0000 <span class="unit">MHz</span></div>
+            </div>
+            <div id="errorBox" class="error-msg">&#9888; Invalid input or no stable solution for this duty cycle.</div>
+            <div class="hint">
+                Example for an m/z 194 target:
+                <code>M_min = 193.5 Da</code>, <code>M_max = 196 Da</code>.
+                The q-boundaries are solved from the Floquet trace equations.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Physical constants
+    const e = 1.602176634e-19;
+    const u = 1.66053906660e-27;
+    const pi = Math.PI;
+    const pi_sq = Math.pow(Math.PI, 2);
+
+    // DOM elements
+    const els = {
+        dSlider: document.getElementById('dSlider'),
+        dInput: document.getElementById('dInput'),
+        v0: document.getElementById('v0'),
+        vEffective: document.getElementById('vEffective'),
+        r0: document.getElementById('r0'),
+        A2: document.getElementById('A2'),
+        mMinIn: document.getElementById('mMinIn'),
+        mMaxIn: document.getElementById('mMaxIn'),
+        flm: document.getElementById('resFlm'),
+        fhm: document.getElementById('resFhm'),
+        fdif: document.getElementById('resFdif'),
+        qRight: document.getElementById('resQright'),
+        qLeft: document.getElementById('resQleft'),
+        formFlm: document.getElementById('formFlm'),
+        formFhm: document.getElementById('formFhm'),
+        errorBox: document.getElementById('errorBox')
+    };
+
+    // --- Core physics engine: Floquet traces (SI eqs S6/S7) ---
+    function calcTrace(q, d, isX) {
+        const term1 = pi * Math.sqrt((d * q) / (2 * (1 - d)));
+        const term2 = pi * Math.sqrt(((1 - d) * q) / (2 * d));
+        if (isX) {
+            return 2 * Math.cosh(term1) * Math.cos(term2);
+        } else {
+            return 2 * Math.cos(term1) * Math.cosh(term2);
+        }
+    }
+
+    // --- Numerical engine: scan and bisection for the transcendental equations (SI eqs S8/S9) ---
+    function findRoot(d, targetTrace, isX) {
+        const step = 0.005;
+        let prevVal = calcTrace(0.1, d, isX) - targetTrace;
+        for (let q = 0.105; q <= 0.8; q += step) {
+            let currVal = calcTrace(q, d, isX) - targetTrace;
+            if (prevVal * currVal <= 0) {
+                let low = q - step;
+                let high = q;
+                for (let i = 0; i < 50; i++) {
+                    let mid = (low + high) / 2;
+                    let midVal = calcTrace(mid, d, isX) - targetTrace;
+                    if ((calcTrace(low, d, isX) - targetTrace) * midVal <= 0) {
+                        high = mid;
+                    } else {
+                        low = mid;
+                    }
+                }
+                return (low + high) / 2;
+            }
+            prevVal = currVal;
+        }
+        return null;
+    }
+
+    // --- Inverse calculation: derive DAWI frequencies from the mass boundaries (inverse of eqs 1/2, with eqs 3/4) ---
+    // M_max = C/(q_left·f²)  =>  f_HM = sqrt(C / (q_left · M_max))
+    // M_min = C/(q_right·f²) =>  f_LM = sqrt(C / (q_right · M_min))
+    function updateCalculator() {
+        if (this && this.id === 'dSlider') els.dInput.value = this.value;
+        if (this && this.id === 'dInput') els.dSlider.value = this.value;
+
+        const d = parseFloat(els.dInput.value);
+        const V0 = parseFloat(els.v0.value);
+        const r0_mm = parseFloat(els.r0.value);
+        const A2 = parseFloat(els.A2.value);
+        const Mmax = parseFloat(els.mMaxIn.value);
+        const Mmin = parseFloat(els.mMinIn.value);
+
+        const validDutyCycle = Number.isFinite(d) && d > 0 && d < 1;
+        const validV0 = Number.isFinite(V0) && V0 > 0;
+        if (validDutyCycle && validV0) {
+            const effectiveV = 4 * d * (1 - d) * V0;
+            els.vEffective.textContent = `${effectiveV.toFixed(4)} V`;
+        } else {
+            els.vEffective.textContent = '—';
+        }
+
+        const invalidInput = !Number.isFinite(d) || !Number.isFinite(V0) ||
+            !Number.isFinite(r0_mm) || !Number.isFinite(A2) ||
+            !Number.isFinite(Mmax) || !Number.isFinite(Mmin) ||
+            d <= 0 || d >= 1 || V0 <= 0 || r0_mm <= 0 || A2 <= 0 ||
+            Mmax <= 0 || Mmin <= 0;
+
+        if (invalidInput) {
+            els.errorBox.style.display = 'block';
+            els.flm.innerHTML = '---';
+            els.fhm.innerHTML = '---';
+            els.fdif.innerHTML = '---';
+            els.formFlm.innerText = 'Mapping: unavailable';
+            els.formFhm.innerText = 'Mapping: unavailable';
+            els.qRight.innerText = '';
+            els.qLeft.innerText = '';
+            return;
+        }
+
+        const q_left = findRoot(d, 2, true);     // X-axis instability boundary (βx=0) -> M_max
+        const q_right = findRoot(d, -2, false);  // Y-axis instability boundary (βy=1) -> M_min
+
+        if (q_left === null || q_right === null || q_left >= q_right || Mmax <= Mmin) {
+            els.errorBox.style.display = 'block';
+            els.flm.innerHTML = "---";
+            els.fhm.innerHTML = "---";
+            els.fdif.innerHTML = "---";
+            els.formFlm.innerText = "Mapping: unavailable";
+            els.formFhm.innerText = "Mapping: unavailable";
+            els.qRight.innerText = "";
+            els.qLeft.innerText = "";
+            return;
+        }
+        els.errorBox.style.display = 'none';
+
+        const r0_m = r0_mm / 1000;
+        // Effective RF amplitude from eq S2: V = 4d(1-d)V0.
+        const Veff = 4 * d * (1 - d) * V0;
+        // System constant C = e·A2·Veff / (u·r0²·pi²), in Hz²·Da.
+        // Divide by 10^12 to express C in MHz²·Da.
+        const C_Hz = (e * A2 * Veff) / (u * Math.pow(r0_m, 2) * pi_sq);
+        const C_MHz = C_Hz / 1e12;
+
+        // Inverse formulas from eqs 1 and 2
+        const f_HM = Math.sqrt(C_MHz / q_left / Mmax);   // MHz
+        const f_LM = Math.sqrt(C_MHz / q_right / Mmin);  // MHz
+
+        els.qLeft.innerText = `q_left = ${q_left.toFixed(6)}`;
+        els.qRight.innerText = `q_right = ${q_right.toFixed(6)}`;
+        els.formFhm.innerText = `f_HM = √(${(C_MHz / q_left).toFixed(2)} / M_max)`;
+        els.formFlm.innerText = `f_LM = √(${(C_MHz / q_right).toFixed(2)} / M_min)`;
+
+        els.fhm.innerHTML = f_HM.toFixed(4) + ' <span class="unit">MHz</span>';
+        els.flm.innerHTML = f_LM.toFixed(4) + ' <span class="unit">MHz</span>';
+        els.fdif.innerHTML = (f_HM - f_LM).toFixed(4) + ' <span class="unit">MHz</span>';
+    }
+
+    ['dSlider', 'dInput', 'v0', 'r0', 'A2', 'mMinIn', 'mMaxIn'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateCalculator);
+    });
+
+    window.onload = updateCalculator;
+</script>
+
+</body>
+</html>
